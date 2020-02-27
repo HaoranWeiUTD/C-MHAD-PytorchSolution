@@ -1,0 +1,30 @@
+title = "TOML Example"
+
+[general]
+usecudnn = true
+usecudnnbenchmark = true
+gpuid = 0
+savemodel = true
+modelsavepath = "VideoModel.pt"
+
+[input]
+batchsize = 20
+numworkers = 40
+shuffle = true
+
+[training]
+epoch = 10
+statsfrequency = 100
+dataset = "/home/haoran/actiondetection/Transition"
+learningrate = 0.0032
+momentum = 0.9
+weightdecay = 0.0001
+
+[validation]
+dataset = "/home/haoran/actiondetection/Transition"
+saveaccuracy = true
+accuracyfilelocation = "accuracymodel1.txt"
+
+
+[testing]
+resultfilelocation = "testingmodel1.txt"

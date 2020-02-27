@@ -1,0 +1,30 @@
+title = "TOML Example"
+
+[general]
+usecudnn = true
+usecudnnbenchmark = true
+gpuid = 0
+savemodel = true
+modelsavepath = "InertialModel.pt"
+
+[input]
+batchsize = 100
+numworkers = 20
+shuffle = true
+
+[training]
+epoch = 15
+statsfrequency = 100
+dataset = "/home/haoran/actiondetection/Transition"
+learningrate = 0.0032
+momentum = 0.9
+weightdecay = 0.0001
+
+[validation]
+dataset = "/home/haoran/actiondetection/Transition"
+saveaccuracy = true
+accuracyfilelocation = "accuracymodel1.txt"
+
+
+[testing]
+resultfilelocation = "testingmodel1.txt"
