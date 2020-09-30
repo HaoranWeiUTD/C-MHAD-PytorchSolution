@@ -12,5 +12,7 @@ C-MHAD consist of 2 applications, corresponding to smart TV gestures application
 
 ### C-MHAD related papers
 The following paper provides more details on the C-MHAD dataset:
-[1] H. Wei, P. Chopada, and N. Kehtarnavaz, "C-MHAD: Continuous Multimodal Human Action Dataset of Simultaneous Video and Inertial Sensing," under review Sensors, 2020. To detect and recognize actions of interest in continuous actions streams, the following paper provides a solution:
+[1] H. Wei, P. Chopada, and N. Kehtarnavaz, "C-MHAD: Continuous Multimodal Human Action Dataset of Simultaneous Video and Inertial Sensing," under review Sensors, 2020. 
+
+To detect and recognize actions of interest in continuous actions streams, the following paper provides a solution:
 [2] H. Wei, and N. Kehtarnavaz, "Simultaneous Utilization of Inertial and Video Sensing for Action Detection and Recognition in Continuous Action Streams," to appear in IEEE Sensors Journal, 2020. 
