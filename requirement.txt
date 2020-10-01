@@ -1,0 +1,2 @@
+pip install imageio==2.4.1
+pip install pandas==1.0.1
