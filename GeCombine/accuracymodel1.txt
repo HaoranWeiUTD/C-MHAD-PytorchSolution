@@ -1,3 +1,0 @@
-
-correct count: 94, total count: 107 accuracy: 0.8785046728971962
-correct count: 92, total count: 107 accuracy: 0.8598130841121495
