@@ -1,0 +1,16 @@
+
+correct count: 74, total count: 107 accuracy: 0.6915887850467289
+correct count: 75, total count: 107 accuracy: 0.7009345794392523
+correct count: 78, total count: 107 accuracy: 0.7289719626168224
+correct count: 79, total count: 107 accuracy: 0.7383177570093458
+correct count: 80, total count: 107 accuracy: 0.7476635514018691
+correct count: 76, total count: 107 accuracy: 0.7102803738317757
+correct count: 83, total count: 107 accuracy: 0.7757009345794392
+correct count: 83, total count: 107 accuracy: 0.7757009345794392
+correct count: 79, total count: 107 accuracy: 0.7383177570093458
+correct count: 80, total count: 107 accuracy: 0.7476635514018691
+correct count: 81, total count: 107 accuracy: 0.7570093457943925
+correct count: 85, total count: 107 accuracy: 0.794392523364486
+correct count: 82, total count: 107 accuracy: 0.7663551401869159
+correct count: 82, total count: 107 accuracy: 0.7663551401869159
+correct count: 84, total count: 107 accuracy: 0.7850467289719626

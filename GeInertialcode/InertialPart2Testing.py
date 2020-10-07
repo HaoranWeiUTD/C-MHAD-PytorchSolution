@@ -12,6 +12,7 @@ from data import CMHADDataset
 from torch.utils.data import DataLoader
 import pdb
 import numpy as np
+import os, xlrd
 print("Loading options...")
 with open('options.toml', 'r') as optionsFile:
     options = toml.loads(optionsFile.read())
@@ -72,6 +73,10 @@ Lastmaxindices = -1
 Lastmaxvalues = -1
 count = 0
 ResultList = []
+TP_DetectionOnly = 0
+TP_DetectionAndRecognition = 0
+PredictPositive = 0
+ActualPositive = 0
 for i_batch, sample_batched in enumerate(testdataloader):
     print(i_batch)
     input = Variable(sample_batched['temporalvolume'])
@@ -104,11 +109,42 @@ for i_batch, sample_batched in enumerate(testdataloader):
             else:
                 with open(options["testing"]["resultfilelocation"], "a") as outputfile:           
                     outputfile.write("\nmaxvalues: {}, maxindices: {}, outputs: {}, MiddleTime: {}, subject:{}" .format(Lastmaxvalues, Lastmaxindices+1, Lastoutputs,LastMiddleTime,Lastsubject))
+                    ############ This part added at 2020/10/07 is used for F1 Calculation ########
+                    resultdir = options["validation"]["dataset"]+"/Subject"+str(Lastsubject.numpy())
+                    resultfiles = os.listdir(resultdir)
+                    resultLabelPath = xlrd.open_workbook(resultdir+"/ActionOfInterestTraSubject"+str(Lastsubject.numpy())+".xlsx")
+                    resultsheet = resultLabelPath.sheet_by_index(0)
+                    for m in range(resultsheet.nrows):
+                        if m==0:
+                            continue
+                        # Only consider video clip no.10 as testing data
+                        if (resultsheet.cell_value(m, 0) == 10) and (LastMiddleTime > resultsheet.cell_value(m, 2)) and (LastMiddleTime < resultsheet.cell_value(m, 3)):
+                            #pdb.set_trace()
+                            TP_DetectionOnly = TP_DetectionOnly+1
+                        if (resultsheet.cell_value(m, 0) == 10) and (LastMiddleTime > resultsheet.cell_value(m, 2)) and (LastMiddleTime < resultsheet.cell_value(m, 3)) and (resultsheet.cell_value(m, 1)==Lastmaxindices+1):
+                            TP_DetectionAndRecognition = TP_DetectionAndRecognition+1                                             
+                    #################################  Calculation Done ########################### 
+                    PredictPositive  = PredictPositive+1
                     TimeRestrict =  LastMiddleTime
                     Lastmaxindices =-1
                     Lastmaxvalues = -1
                     count = 0
+subject = 1
+while subject<=12:
+    subdir = options["validation"]["dataset"]+"/Subject"+str(subject)
+    files = os.listdir(subdir)
+    LabelPath = xlrd.open_workbook(subdir+"/ActionOfInterestTraSubject"+str(subject)+".xlsx")
+    sheet = LabelPath.sheet_by_index(0) 
+    for m in range(sheet.nrows):
+        if m==0:
+            continue
+        if sheet.cell_value(m, 0) == 10:
+            ActualPositive = ActualPositive+1
+    subject = subject+1
 
+with open(options["testing"]["resultfilelocation"], "a") as outputfile:           
+                    outputfile.write("\n TP_DetectionOnly: {}, ActualPositive: {}, PredictPositive: {}, Recall: {}, Precision: {}, F1: {}" .format(TP_DetectionOnly, ActualPositive, PredictPositive, TP_DetectionOnly/ActualPositive, TP_DetectionOnly/PredictPositive, 2*(TP_DetectionOnly/ActualPositive)*(TP_DetectionOnly/PredictPositive)/(TP_DetectionOnly/ActualPositive+TP_DetectionOnly/PredictPositive)))
+                    outputfile.write("\n TP_DetectionAndRecognition: {}, ActualPositive: {}, PredictPositive: {}, Recall: {}, Precision: {}, F1: {}" .format(TP_DetectionAndRecognition, ActualPositive, PredictPositive, TP_DetectionOnly/ActualPositive, TP_DetectionOnly/PredictPositive, 2*(TP_DetectionAndRecognition/ActualPositive)*(TP_DetectionAndRecognition/PredictPositive)/(TP_DetectionAndRecognition/ActualPositive+TP_DetectionAndRecognition/PredictPositive)))
 ResultList = np.array(ResultList)
 # save to csv file
 np.savetxt('testscore.csv', ResultList, delimiter=',')
