@@ -18,8 +18,10 @@ def load_video(filename, startframe):
     Returns:
         List[FloatTensor]: the frames of the video as a list of 3D tensors
             (channels, width, height)"""
-
-    vid = imageio.get_reader(filename,  'ffmpeg')
+    try:
+        vid = imageio.get_reader(filename,  'ffmpeg')
+    except:
+        print("Error at: "+filename)    
     frames = []
     for i in range(0, 45):
         image = vid.get_data(startframe+i)

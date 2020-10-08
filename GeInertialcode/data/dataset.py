@@ -52,9 +52,9 @@ class CMHADDataset(Dataset):
                     startframe = int(50*midtime) - 100 #200frames in total length, using only 150 frames from 200 as data augmentation
                     endframe = int(50*midtime) + 99
                     startframe, endframe = self.check_overflow(startframe, endframe)
-                    for n in range(15):
-                        #print(n)
-                        entry = (int(sheet.cell_value(m, 1)-1), dirpath, startframe+3*n, startframe+3*n+149,MissFrames,subject)
+                    for n in range(45):
+                        #entry = (int(sheet.cell_value(m, 1)-1), dirpath, startframe+3*n, startframe+3*n+149,MissFrames,subject)
+                        entry = (int(sheet.cell_value(m, 1)-1), dirpath, startframe+n, startframe+n+149,MissFrames,subject)
                         completeList.append(entry)
             if set == "test":
                 for o in valvideo:

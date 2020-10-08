@@ -3,7 +3,7 @@ title = "TOML Example"
 [general]
 usecudnn = true
 usecudnnbenchmark = true
-gpuid = 0
+gpuid = 1
 savemodel = true
 modelsavepath = "InertialModel.pt"
 

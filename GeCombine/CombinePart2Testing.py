@@ -12,6 +12,7 @@ from data import CMHADDataset
 from torch.utils.data import DataLoader
 import pdb
 import numpy as np
+import os, xlrd
 print("Loading options...")
 with open('options.toml', 'r') as optionsFile:
     options = toml.loads(optionsFile.read())
@@ -20,7 +21,6 @@ if(options["general"]["usecudnnbenchmark"] and options["general"]["usecudnn"]):
     print("Running cudnn benchmark...")
     torch.backends.cudnn.benchmark = True
 
-#load the model.
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -34,9 +34,9 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(64 * 1 * 6, 128)
         self.dense1_bn = nn.BatchNorm1d(128)
         self.dr1 = nn.Dropout(p=0.5)
-        #self.fc2 = nn.Linear(256, 56)
-        self.fc2 = nn.Linear(256, 7)
-        #self.dense2_bn = nn.BatchNorm1d(56)
+        self.fc2 = nn.Linear(256, 56)
+        self.fc3 = nn.Linear(56, 7)
+        self.dense2_bn = nn.BatchNorm1d(56)
         
         self.Vconv1 = nn.Conv3d(1, 16, (3,3,3), stride=(1,2,2), padding=(0,1,1))
         self.Vbn1 = nn.BatchNorm3d(16)
@@ -66,9 +66,9 @@ class Net(nn.Module):
         y = F.relu(self.Vdense1_bn1(self.Vfc1(y)))
         #pdb.set_trace()       
         z = torch.cat((x, y), 1)
-        #z = F.relu(self.dense2_bn(self.fc2(z)))
+        z = F.relu(self.dense2_bn(self.fc2(z)))
         z = self.dr1(z)
-        z = self.fc2(z)
+        z = self.fc3(z)
         return z
 model= Net()
 
@@ -96,6 +96,10 @@ TimeRestrict = 0
 Lastmaxindices = -1
 Lastmaxvalues = -1
 count = 0
+TP_DetectionOnly = 0
+TP_DetectionAndRecognition = 0
+PredictPositive = 0
+ActualPositive = 0
 for i_batch, sample_batched in enumerate(testdataloader):
     print(i_batch)
     input_x = Variable(sample_batched['temporalvolume_x'])
@@ -129,10 +133,43 @@ for i_batch, sample_batched in enumerate(testdataloader):
             else:
                 with open(options["testing"]["resultfilelocation"], "a") as outputfile:           
                     outputfile.write("\nmaxvalues: {}, maxindices: {}, outputs: {}, MiddleTime: {}, subject:{}" .format(Lastmaxvalues, Lastmaxindices+1, Lastoutputs,LastMiddleTime,Lastsubject))
+                    ############ This part added at 2020/10/07 is used for F1 Calculation ########
+                    resultdir = options["validation"]["dataset"]+"/Subject"+str(Lastsubject.numpy())
+                    resultfiles = os.listdir(resultdir)
+                    resultLabelPath = xlrd.open_workbook(resultdir+"/ActionOfInterestTraSubject"+str(Lastsubject.numpy())+".xlsx")
+                    resultsheet = resultLabelPath.sheet_by_index(0)
+                    for m in range(resultsheet.nrows):
+                        if m==0:
+                            continue
+                        # Only consider video clip no.10 as testing data
+                        if (resultsheet.cell_value(m, 0) == 10) and (LastMiddleTime > resultsheet.cell_value(m, 2)) and (LastMiddleTime < resultsheet.cell_value(m, 3)):
+                            #pdb.set_trace()
+                            TP_DetectionOnly = TP_DetectionOnly+1
+                        if (resultsheet.cell_value(m, 0) == 10) and (LastMiddleTime > resultsheet.cell_value(m, 2)) and (LastMiddleTime < resultsheet.cell_value(m, 3)) and (resultsheet.cell_value(m, 1)==Lastmaxindices+1):
+                            TP_DetectionAndRecognition = TP_DetectionAndRecognition+1                                             
+                    #################################  Calculation Done ########################### 
+                    PredictPositive  = PredictPositive+1
                     TimeRestrict =  LastMiddleTime
                     Lastmaxindices =-1
                     Lastmaxvalues = -1
                     count = 0
+subject = 1
+while subject<=12:
+    subdir = options["validation"]["dataset"]+"/Subject"+str(subject)
+    files = os.listdir(subdir)
+    LabelPath = xlrd.open_workbook(subdir+"/ActionOfInterestTraSubject"+str(subject)+".xlsx")
+    sheet = LabelPath.sheet_by_index(0) 
+    for m in range(sheet.nrows):
+        if m==0:
+            continue
+        if sheet.cell_value(m, 0) == 10:
+            ActualPositive = ActualPositive+1
+    subject = subject+1
+
+with open(options["testing"]["resultfilelocation"], "a") as outputfile:           
+                    outputfile.write("\n TP_DetectionOnly: {}, ActualPositive: {}, PredictPositive: {}, Recall: {}, Precision: {}, F1: {}" .format(TP_DetectionOnly, ActualPositive, PredictPositive, TP_DetectionOnly/ActualPositive, TP_DetectionOnly/PredictPositive, 2*(TP_DetectionOnly/ActualPositive)*(TP_DetectionOnly/PredictPositive)/(TP_DetectionOnly/ActualPositive+TP_DetectionOnly/PredictPositive)))
+                    outputfile.write("\n TP_DetectionAndRecognition: {}, ActualPositive: {}, PredictPositive: {}, Recall: {}, Precision: {}, F1: {}" .format(TP_DetectionAndRecognition, ActualPositive, PredictPositive, TP_DetectionOnly/ActualPositive, TP_DetectionOnly/PredictPositive, 2*(TP_DetectionAndRecognition/ActualPositive)*(TP_DetectionAndRecognition/PredictPositive)/(TP_DetectionAndRecognition/ActualPositive+TP_DetectionAndRecognition/PredictPositive)))
+
 '''
 
 def validate(modelOutput, labels):

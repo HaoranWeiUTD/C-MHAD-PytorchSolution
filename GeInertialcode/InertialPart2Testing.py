@@ -90,7 +90,7 @@ for i_batch, sample_batched in enumerate(testdataloader):
     outputs = nn.Softmax(dim=1)(outputs)
     maxvalues, maxindices = torch.max(outputs.data, 1)
     ResultList.append([MiddleTime[0].tolist()]+outputs[0].data.cpu().tolist())
-    if maxvalues[0]>0.83 and abs(MiddleTime[0]-TimeRestrict)>1.5:
+    if maxvalues[0]>0.95 and abs(MiddleTime[0]-TimeRestrict)>1.5:
         if Lastmaxindices == -1:
                 Lastmaxindices = maxindices[0]
                 Lastmaxvalues = maxvalues[0]

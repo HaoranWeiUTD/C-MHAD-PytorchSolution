@@ -1,0 +1,30 @@
+%BaseLine
+correct count: 96, total count: 107 accuracy: 0.897196261682243
+correct count: 90, total count: 107 accuracy: 0.8411214953271028
+correct count: 95, total count: 107 accuracy: 0.8878504672897196
+correct count: 94, total count: 107 accuracy: 0.8785046728971962
+correct count: 95, total count: 107 accuracy: 0.8878504672897196
+correct count: 92, total count: 107 accuracy: 0.8598130841121495
+correct count: 96, total count: 107 accuracy: 0.897196261682243
+correct count: 94, total count: 107 accuracy: 0.8785046728971962
+correct count: 92, total count: 107 accuracy: 0.8598130841121495
+correct count: 95, total count: 107 accuracy: 0.8878504672897196
+correct count: 92, total count: 107 accuracy: 0.8598130841121495
+correct count: 92, total count: 107 accuracy: 0.8598130841121495
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 88, total count: 107 accuracy: 0.822429906542056
+correct count: 94, total count: 107 accuracy: 0.8785046728971962
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 96, total count: 107 accuracy: 0.897196261682243
+correct count: 96, total count: 107 accuracy: 0.897196261682243
+correct count: 95, total count: 107 accuracy: 0.8878504672897196
+correct count: 95, total count: 107 accuracy: 0.8878504672897196
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 91, total count: 107 accuracy: 0.8504672897196262
+correct count: 90, total count: 107 accuracy: 0.8411214953271028
+correct count: 93, total count: 107 accuracy: 0.8691588785046729
+correct count: 90, total count: 107 accuracy: 0.8411214953271028
+
+%2
